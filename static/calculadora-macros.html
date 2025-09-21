@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Macronutrientes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .form-container {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #4facfe;
+      box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .results {
+      margin-top: 40px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .results h2 {
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.8em;
+    }
+
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .macro-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .macro-card h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .macro-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .macro-unit {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .training-results {
+      margin-top: 20px;
+      padding: 20px;
+      background: #e3f2fd;
+      border-radius: 10px;
+    }
+
+    .training-results h3 {
+      color: #1976d2;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .macro-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        margin: 10px;
+      }
+
+      .form-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🥗 Calculadora de Macronutrientes</h1>
+    <p>Descubra suas necessidades diárias de calorias e macronutrientes</p>
+  </div>
+
+  <div class="form-container">
+    <form id="macroForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sexo">Sexo:</label>
+          <select id="sexo" required>
+            <option value="">Selecione...</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos):</label>
+          <input type="number" id="idade" min="15" max="100" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="altura">Altura (cm):</label>
+          <input type="number" id="altura" min="140" max="220" required>
+        </div>
+        <div class="form-group">
+          <label for="peso">Peso (kg):</label>
+          <input type="number" id="peso" min="40" max="200" step="0.1" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="atividade">Nível de Atividade Diária:</label>
+        <select id="atividade" required>
+          <option value="">Selecione...</option>
+          <option value="leve">Leve (pouco ou nenhum exercício)</option>
+          <option value="moderada">Moderada (exercício leve 1-3 dias/semana)</option>
+          <option value="intensa">Intensa (exercício moderado 3-5 dias/semana)</option>
+          <option value="muito_intensa">Muito Intensa (exercício pesado 6-7 dias/semana)</option>
+          <option value="extrema">Extrema (exercício muito pesado, trabalho físico)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="objetivo">Objetivo:</label>
+        <select id="objetivo" required>
+          <option value="">Selecione...</option>
+          <option value="perder">Perder Peso (-500 kcal/dia)</option>
+          <option value="perder_rapido">Perder Peso Rápido (-750 kcal/dia)</option>
+          <option value="manter">Manter Peso</option>
+          <option value="ganhar">Ganhar Peso (+300 kcal/dia)</option>
+          <option value="ganhar_rapido">Ganhar Peso Rápido (+500 kcal/dia)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="proteina">Ingestão de Proteína:</label>
+        <select id="proteina" required>
+          <option value="">Selecione...</option>
+          <option value="baixa">Baixa (1.2g/kg)</option>
+          <option value="moderada">Moderada (1.6g/kg)</option>
+          <option value="alta">Alta (2.0g/kg)</option>
+          <option value="extrema">Extrema (2.4g/kg)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Preferências de Distribuição:</label>
+        <div class="checkbox-group">
+          <input type="checkbox" id="treino" name="preferencias">
+          <label for="treino">Mais calorias em dias de treino (+200 kcal)</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="cardio" name="preferencias">
+          <label for="cardio">Mais calorias em dias de cardio (+150 kcal)</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Calcular Macronutrientes</button>
+    </form>
+
+    <div id="results" class="results">
+      <h2>Seus Macronutrientes Diários</h2>
+      <div class="macro-grid">
+        <div class="macro-card">
+          <h3>🔥 Calorias</h3>
+          <div class="macro-value" id="calorias">0</div>
+          <div class="macro-unit">kcal/dia</div>
+        </div>
+        <div class="macro-card">
+          <h3>🥩 Proteínas</h3>
+          <div class="macro-value" id="proteinas">0</div>
+          <div class="macro-unit">g/dia</div>
+        </div>
+        <div class="macro-card">
+          <h3>🍞 Carboidratos</h3>
+          <div class="macro-value" id="carboidratos">0</div>
+          <div class="macro-unit">g/dia</div>
+        </div>
+        <div class="macro-card">
+          <h3>🥑 Gorduras</h3>
+          <div class="macro-value" id="gorduras">0</div>
+          <div class="macro-unit">g/dia</div>
+        </div>
+      </div>
+
+      <div id="trainingResults" class="training-results" style="display: none;">
+        <h3>📅 Distribuição por Tipo de Dia</h3>
+        <div id="trainingDetails"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('macroForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    calcularMacros();
+  });
+
+  function calcularMacros() {
+    // Obter valores do formulário
+    const sexo = document.getElementById('sexo').value;
+    const idade = parseInt(document.getElementById('idade').value);
+    const altura = parseInt(document.getElementById('altura').value);
+    const peso = parseFloat(document.getElementById('peso').value);
+    const atividade = document.getElementById('atividade').value;
+    const objetivo = document.getElementById('objetivo').value;
+    const proteina = document.getElementById('proteina').value;
+    const treino = document.getElementById('treino').checked;
+    const cardio = document.getElementById('cardio').checked;
+
+    // Calcular TMB (Taxa Metabólica Basal) usando fórmula de Mifflin-St Jeor
+    let tmb;
+    if (sexo === 'masculino') {
+      tmb = (10 * peso) + (6.25 * altura) - (5 * idade) + 5;
+    } else {
+      tmb = (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+    }
+
+    // Fator de atividade
+    const fatoresAtividade = {
+      'leve': 1.2,
+      'moderada': 1.375,
+      'intensa': 1.55,
+      'muito_intensa': 1.725,
+      'extrema': 1.9
+    };
+
+    // Calcular TDEE (Total Daily Energy Expenditure)
+    let tdee = tmb * fatoresAtividade[atividade];
+
+    // Ajustar para objetivo
+    const ajustesObjetivo = {
+      'perder': -500,
+      'perder_rapido': -750,
+      'manter': 0,
+      'ganhar': 300,
+      'ganhar_rapido': 500
+    };
+
+    let caloriasDiarias = tdee + ajustesObjetivo[objetivo];
+
+    // Calcular proteínas
+    const fatoresProteina = {
+      'baixa': 1.2,
+      'moderada': 1.6,
+      'alta': 2.0,
+      'extrema': 2.4
+    };
+
+    const proteinaGramas = peso * fatoresProteina[proteina];
+    const proteinaKcal = proteinaGramas * 4;
+
+    // Calcular gorduras (25-30% das calorias totais)
+    const gorduraKcal = caloriasDiarias * 0.275; // 27.5% média
+    const gorduraGramas = gorduraKcal / 9;
+
+    // Calcular carboidratos (resto das calorias)
+    const carboidratoKcal = caloriasDiarias - proteinaKcal - gorduraKcal;
+    const carboidratoGramas = carboidratoKcal / 4;
+
+    // Exibir resultados
+    document.getElementById('calorias').textContent = Math.round(caloriasDiarias);
+    document.getElementById('proteinas').textContent = Math.round(proteinaGramas);
+    document.getElementById('carboidratos').textContent = Math.round(carboidratoGramas);
+    document.getElementById('gorduras').textContent = Math.round(gorduraGramas);
+
+    // Mostrar distribuição por tipo de dia se aplicável
+    if (treino || cardio) {
+      mostrarDistribuicaoTreino(caloriasDiarias, proteinaGramas, carboidratoGramas, gorduraGramas, treino, cardio);
+    } else {
+      document.getElementById('trainingResults').style.display = 'none';
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function mostrarDistribuicaoTreino(calorias, proteinas, carboidratos, gorduras, treino, cardio) {
+    let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">';
+
+    // Dia normal
+    html += `
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #666; margin-bottom: 10px;">📅 Dia Normal</h4>
+                    <p><strong>Calorias:</strong> ${Math.round(calorias)} kcal</p>
+                    <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
+                    <p><strong>Carboidratos:</strong> ${Math.round(carboidratos)}g</p>
+                    <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
+                </div>
+            `;
+
+    if (treino) {
+      const caloriasTreino = calorias + 200;
+      const carboidratosTreino = carboidratos + 50; // 200 kcal extras = 50g carbs
+      html += `
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">💪 Dia de Treino</h4>
+                        <p><strong>Calorias:</strong> ${Math.round(caloriasTreino)} kcal</p>
+                        <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
+                        <p><strong>Carboidratos:</strong> ${Math.round(carboidratosTreino)}g</p>
+                        <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
+                    </div>
+                `;
+    }
+
+    if (cardio) {
+      const caloriasCardio = calorias + 150;
+      const carboidratosCardio = carboidratos + 37.5; // 150 kcal extras = 37.5g carbs
+      html += `
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #ff9800; margin-bottom: 10px;">🏃 Dia de Cardio</h4>
+                        <p><strong>Calorias:</strong> ${Math.round(caloriasCardio)} kcal</p>
+                        <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
+                        <p><strong>Carboidratos:</strong> ${Math.round(carboidratosCardio)}g</p>
+                        <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
+                    </div>
+                `;
+    }
+
+    html += '</div>';
+    document.getElementById('trainingDetails').innerHTML = html;
+    document.getElementById('trainingResults').style.display = 'block';
+  }
+</script>
+</body>
+</html>
