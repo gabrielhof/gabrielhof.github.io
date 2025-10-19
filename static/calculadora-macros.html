@@ -1,451 +1,713 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Macronutrientes</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra suas Calorias e Macros</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
 
-    .header {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-    .header h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
 
-    .header p {
-      font-size: 1.1em;
-      opacity: 0.9;
-    }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
 
-    .form-container {
-      padding: 40px;
-    }
+        .form-container {
+            padding: 40px;
+        }
 
-    .form-group {
-      margin-bottom: 25px;
-    }
+        .form-group {
+            margin-bottom: 25px;
+        }
 
-    .form-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 25px;
-    }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
 
-    .form-row .form-group {
-      flex: 1;
-      margin-bottom: 0;
-    }
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #333;
-      font-size: 1.1em;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
 
-    input, select {
-      width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s ease;
-    }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: #4facfe;
-      box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-    }
+        input[type="radio"] {
+            width: 10%;
+        }
 
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
 
-    .checkbox-group input[type="checkbox"] {
-      width: auto;
-      margin: 0;
-    }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
 
-    .btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      width: 100%;
-      margin-top: 20px;
-    }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
 
-    .results {
-      margin-top: 40px;
-      padding: 30px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      display: none;
-    }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
 
-    .results h2 {
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 1.8em;
-    }
+        .results {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
 
-    .macro-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
 
-    .macro-card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
 
-    .macro-card h3 {
-      color: #667eea;
-      margin-bottom: 10px;
-      font-size: 1.2em;
-    }
+        .macro-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-    .macro-value {
-      font-size: 2em;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 5px;
-    }
+        .macro-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
 
-    .macro-unit {
-      color: #666;
-      font-size: 0.9em;
-    }
+        .macro-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
 
-    .training-results {
-      margin-top: 20px;
-      padding: 20px;
-      background: #e3f2fd;
-      border-radius: 10px;
-    }
+        .macro-unit {
+            color: #666;
+            font-size: 0.9em;
+        }
 
-    .training-results h3 {
-      color: #1976d2;
-      margin-bottom: 15px;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #333;
+        }
 
-    @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
+        table > thead > tr {
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
 
-      .macro-grid {
-        grid-template-columns: 1fr;
-      }
+        table > tbody > tr {
+            border-bottom: 1px solid #fafafa;
+        }
 
-      .container {
-        margin: 10px;
-      }
+        table > tfoot > tr {
+            font-weight: 700;
+            background: #f7f9fc;
+        }
 
-      .form-container {
-        padding: 20px;
-      }
-    }
-  </style>
+        table > thead > tr > th,
+        table > tbody > tr > td,
+        table > tfoot > tr > td {
+            padding: 16px 8px;
+        }
+
+        .distribuicao-por-dia > .dia {
+            margin-top: 30px;
+        }
+
+        .distribuicao-por-dia > .dia > h3 {
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                margin: 10px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .results {
+                padding: 20px 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>🥗 Calculadora de Macronutrientes</h1>
-    <p>Descubra suas necessidades diárias de calorias e macronutrientes</p>
-  </div>
-
-  <div class="form-container">
-    <form id="macroForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="sexo">Sexo:</label>
-          <select id="sexo" required>
-            <option value="">Selecione...</option>
-            <option value="masculino">Masculino</option>
-            <option value="feminino">Feminino</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="idade">Idade (anos):</label>
-          <input type="number" id="idade" min="15" max="100" required>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="altura">Altura (cm):</label>
-          <input type="number" id="altura" min="140" max="220" required>
-        </div>
-        <div class="form-group">
-          <label for="peso">Peso (kg):</label>
-          <input type="number" id="peso" min="40" max="200" step="0.1" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="atividade">Nível de Atividade Diária:</label>
-        <select id="atividade" required>
-          <option value="">Selecione...</option>
-          <option value="leve">Leve (pouco ou nenhum exercício)</option>
-          <option value="moderada">Moderada (exercício leve 1-3 dias/semana)</option>
-          <option value="intensa">Intensa (exercício moderado 3-5 dias/semana)</option>
-          <option value="muito_intensa">Muito Intensa (exercício pesado 6-7 dias/semana)</option>
-          <option value="extrema">Extrema (exercício muito pesado, trabalho físico)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="objetivo">Objetivo:</label>
-        <select id="objetivo" required>
-          <option value="">Selecione...</option>
-          <option value="perder">Perder Peso (-500 kcal/dia)</option>
-          <option value="perder_rapido">Perder Peso Rápido (-750 kcal/dia)</option>
-          <option value="manter">Manter Peso</option>
-          <option value="ganhar">Ganhar Peso (+300 kcal/dia)</option>
-          <option value="ganhar_rapido">Ganhar Peso Rápido (+500 kcal/dia)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="proteina">Ingestão de Proteína:</label>
-        <select id="proteina" required>
-          <option value="">Selecione...</option>
-          <option value="baixa">Baixa (1.2g/kg)</option>
-          <option value="moderada">Moderada (1.6g/kg)</option>
-          <option value="alta">Alta (2.0g/kg)</option>
-          <option value="extrema">Extrema (2.4g/kg)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Preferências de Distribuição:</label>
-        <div class="checkbox-group">
-          <input type="checkbox" id="treino" name="preferencias">
-          <label for="treino">Mais calorias em dias de treino (+200 kcal)</label>
-        </div>
-        <div class="checkbox-group">
-          <input type="checkbox" id="cardio" name="preferencias">
-          <label for="cardio">Mais calorias em dias de cardio (+150 kcal)</label>
-        </div>
-      </div>
-
-      <button type="submit" class="btn">Calcular Macronutrientes</button>
-    </form>
-
-    <div id="results" class="results">
-      <h2>Seus Macronutrientes Diários</h2>
-      <div class="macro-grid">
-        <div class="macro-card">
-          <h3>🔥 Calorias</h3>
-          <div class="macro-value" id="calorias">0</div>
-          <div class="macro-unit">kcal/dia</div>
-        </div>
-        <div class="macro-card">
-          <h3>🥩 Proteínas</h3>
-          <div class="macro-value" id="proteinas">0</div>
-          <div class="macro-unit">g/dia</div>
-        </div>
-        <div class="macro-card">
-          <h3>🍞 Carboidratos</h3>
-          <div class="macro-value" id="carboidratos">0</div>
-          <div class="macro-unit">g/dia</div>
-        </div>
-        <div class="macro-card">
-          <h3>🥑 Gorduras</h3>
-          <div class="macro-value" id="gorduras">0</div>
-          <div class="macro-unit">g/dia</div>
-        </div>
-      </div>
-
-      <div id="trainingResults" class="training-results" style="display: none;">
-        <h3>📅 Distribuição por Tipo de Dia</h3>
-        <div id="trainingDetails"></div>
-      </div>
+    <div class="header">
+        <h1>🥗 Calorias e Macros</h1>
+        <p>Descubra as suas necessidades diárias de calorias e macronutrientes</p>
     </div>
-  </div>
+
+    <div class="form-container">
+        <form id="macroForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sexo">Sexo:</label>
+                    <select id="sexo" name="sexo" required>
+                        <option value="">Selecione...</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="idade">Idade (anos):</label>
+                    <input type="number" id="idade" name="idade" min="15" max="100" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="altura">Altura (cm):</label>
+                    <input type="number" id="altura" name="altura" min="140" max="220" required>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso (kg):</label>
+                    <input type="number" id="peso" name="peso" min="40" max="200" step="0.1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="objetivo">Qual seu objetivo?</label>
+                <select id="objetivo" name="objetivo" required>
+                    <option value="">Selecione...</option>
+                    <option value="perder_rapido">Perder Peso Rápido (-750 kcal/dia)</option>
+                    <option value="perder">Perder Peso (-500 kcal/dia)</option>
+                    <option value="manter">Manter Peso</option>
+                    <option value="ganhar">Ganhar Peso (+300 kcal/dia)</option>
+                    <option value="ganhar_rapido">Ganhar Peso Rápido (+500 kcal/dia)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="treinos">Qual sua meta de dias de treinos de musculação na semana?</label>
+                <input type="range" id="treinos" name="treinos" min="0" max="7" value="5" required oninput="this.nextElementSibling.value = this.value" />
+                <output>5</output>
+            </div>
+
+            <div class="form-group">
+                <label for="cardios">Qual sua meta de dias de exercícios cardiovasculares/aeróbicos na semana?</label>
+                <input type="range" id="cardios" name="cardios" min="0" max="7" value="4" required oninput="this.nextElementSibling.value = this.value" />
+                <output>4</output>
+            </div>
+
+            <div class="form-group">
+                <label for="tempo-cardio">Qual sua meta de minutos de cardio/aeróbico por sessão?</label>
+                <input type="range" id="tempo-cardio" name="tempo-cardio" min="0" max="200" step="5" value="20" required oninput="this.nextElementSibling.value = this.value" />
+                <output>20</output>
+            </div>
+
+            <div class="form-group">
+                <label for="meta-passos">Qual sua meta de passos diário?</label>
+                <input type="range" id="meta-passos" name="meta-passos" min="0" max="25000" step="1000" value="7000" required oninput="this.nextElementSibling.value = this.value" />
+                <output>7000</output>
+            </div>
+
+            <div class="form-group">
+                <label for="refeicoes">Quantas refeições por dia você gostaria de fazer?</label>
+                <input type="range" id="refeicoes" name="refeicoes" min="1" max="10" value="5" required oninput="this.nextElementSibling.value = this.value" />
+                <output>5</output>
+            </div>
+
+            <div class="form-group">
+                <label for="proteina">Qual sua preferência de ingestão diária de proteína?</label>
+                <select id="proteina" name="proteina" required>
+                    <option value="">Selecione...</option>
+                    <option value="baixa">Baixa (para ganho de peso: 1.6g/kg - para perda ou manutenção de peso: 1.8g/kg)</option>
+                    <option value="moderada">Moderada (para ganho de peso: 1.8/kg - para perda ou manutenção de peso: 2.1g/kg)</option>
+                    <option value="alta">Alta (para ganho de peso: 2g/kg - para perda ou manutenção de peso: 2.4g/kg)</option>
+                    <option value="extrema">Extrema (para ganho de peso: 2.2g/kg - para perda ou manutenção de peso: 2.7g/kg)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Como você gostaria de distribuir as calorias na semana?</label>
+
+                <div class="checkbox-group">
+                    <input type="radio" id="distribuicao-igual" name="preferencia-distribuicao" value="distribuicao-igual" checked>
+                    <label for="distribuicao-igual">Distribuir as calorias uniformemente (mesmas calorias todos os dias)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="radio" id="distribuicao-treino" name="preferencia-distribuicao" value="distribuicao-treino">
+                    <label for="distribuicao-treino">Mais calorias em dias de treino</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Calcular</button>
+        </form>
+
+        <div id="results" class="results">
+            <h2>Resultado</h2>
+
+            <div class="macro-card">
+                <h4>⚡️ Nível Atividade</h4>
+                <div class="macro-value" id="atividade">Leve</div>
+            </div>
+
+            <div id="distribuicao-por-dia" class="distribuicao-por-dia"></div>
+        </div>
+    </div>
 </div>
 
 <script>
-  document.getElementById('macroForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    calcularMacros();
-  });
+    const FATORES_PROTEINA_POR_OBJETIVO = {
+        'ganhar': {
+            'baixa': 1.6,
+            'moderada': 1.8,
+            'alta': 2.0,
+            'extrema': 2.2
+        },
+        'perder': {
+            'baixa': 1.8,
+            'moderada': 2.1,
+            'alta': 2.4,
+            'extrema': 2.7
+        }
+    };
 
-  function calcularMacros() {
-    // Obter valores do formulário
-    const sexo = document.getElementById('sexo').value;
-    const idade = parseInt(document.getElementById('idade').value);
-    const altura = parseInt(document.getElementById('altura').value);
-    const peso = parseFloat(document.getElementById('peso').value);
-    const atividade = document.getElementById('atividade').value;
-    const objetivo = document.getElementById('objetivo').value;
-    const proteina = document.getElementById('proteina').value;
-    const treino = document.getElementById('treino').checked;
-    const cardio = document.getElementById('cardio').checked;
+    FATORES_PROTEINA_POR_OBJETIVO['ganhar_rapido'] = FATORES_PROTEINA_POR_OBJETIVO['ganhar'];
+    FATORES_PROTEINA_POR_OBJETIVO['manter'] = FATORES_PROTEINA_POR_OBJETIVO['perder'];
+    FATORES_PROTEINA_POR_OBJETIVO['perder_rapido'] = FATORES_PROTEINA_POR_OBJETIVO['perder'];
 
-    // Calcular TMB (Taxa Metabólica Basal) usando fórmula de Mifflin-St Jeor
-    let tmb;
-    if (sexo === 'masculino') {
-      tmb = (10 * peso) + (6.25 * altura) - (5 * idade) + 5;
-    } else {
-      tmb = (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+    const SUBSTANTIVO_OBJETIVO = {
+        'ganhar': 'ganho',
+        'ganhar_rapido': 'ganho',
+        'perder': 'perda',
+        'perder_rapido': 'perda',
+        'manter': 'manutenção'
     }
 
-    // Fator de atividade
-    const fatoresAtividade = {
-      'leve': 1.2,
-      'moderada': 1.375,
-      'intensa': 1.55,
-      'muito_intensa': 1.725,
-      'extrema': 1.9
-    };
+    document.getElementById('objetivo').addEventListener('change', event => {
+        const objetivo = event.currentTarget.value;
 
-    // Calcular TDEE (Total Daily Energy Expenditure)
-    let tdee = tmb * fatoresAtividade[atividade];
+        let baixaProteina;
+        let moderadaProteina;
+        let altaProteina;
+        let extremaProteina;
 
-    // Ajustar para objetivo
-    const ajustesObjetivo = {
-      'perder': -500,
-      'perder_rapido': -750,
-      'manter': 0,
-      'ganhar': 300,
-      'ganhar_rapido': 500
-    };
+        if (objetivo) {
+            const substantivoObjetivo = SUBSTANTIVO_OBJETIVO[objetivo];
+            const fatoresProteina = FATORES_PROTEINA_POR_OBJETIVO[objetivo];
 
-    let caloriasDiarias = tdee + ajustesObjetivo[objetivo];
+            baixaProteina = `para ${substantivoObjetivo} de peso ${fatoresProteina['baixa']}g/kg`;
+            moderadaProteina = `para ${substantivoObjetivo} de peso ${fatoresProteina['moderada']}g/kg`;
+            altaProteina = `para ${substantivoObjetivo} de peso ${fatoresProteina['alta']}g/kg`;
+            extremaProteina = `para ${substantivoObjetivo} de peso ${fatoresProteina['extrema']}g/kg`;
+        } else {
+            baixaProteina = 'para ganho de peso: 1.6g/kg - para perda ou manutenção de peso: 1.8g/kg'
+            moderadaProteina = 'para ganho de peso: 1.8g/kg - para perda ou manutenção de peso: 2.1g/kg'
+            altaProteina = 'para ganho de peso: 2g/kg - para perda ou manutenção de peso: 2.4g/kg'
+            extremaProteina = 'para ganho de peso: 2.2g/kg - para perda ou manutenção de peso: 2.7g/kg'
+        }
 
-    // Calcular proteínas
-    const fatoresProteina = {
-      'baixa': 1.2,
-      'moderada': 1.6,
-      'alta': 2.0,
-      'extrema': 2.4
-    };
+        const inputProteina = document.getElementById('proteina');
 
-    const proteinaGramas = peso * fatoresProteina[proteina];
-    const proteinaKcal = proteinaGramas * 4;
+        inputProteina.querySelector('[value="baixa"]').textContent = 'Baixa (' + baixaProteina + ')';
+        inputProteina.querySelector('[value="moderada"]').textContent = 'Moderada (' + moderadaProteina + ')';
+        inputProteina.querySelector('[value="alta"]').textContent = 'Alta (' + altaProteina + ')';
+        inputProteina.querySelector('[value="extrema"]').textContent = 'Extrema (' + extremaProteina + ')';
+    });
 
-    // Calcular gorduras (25-30% das calorias totais)
-    const gorduraKcal = caloriasDiarias * 0.275; // 27.5% média
-    const gorduraGramas = gorduraKcal / 9;
+    const macroForm = document.getElementById('macroForm');
 
-    // Calcular carboidratos (resto das calorias)
-    const carboidratoKcal = caloriasDiarias - proteinaKcal - gorduraKcal;
-    const carboidratoGramas = carboidratoKcal / 4;
+    macroForm.addEventListener('change', () => {
+        const formData = Object.fromEntries(new FormData(document.getElementById('macroForm')).entries());
+        localStorage.setItem('valores_salvos', JSON.stringify(formData));
+    });
 
-    // Exibir resultados
-    document.getElementById('calorias').textContent = Math.round(caloriasDiarias);
-    document.getElementById('proteinas').textContent = Math.round(proteinaGramas);
-    document.getElementById('carboidratos').textContent = Math.round(carboidratoGramas);
-    document.getElementById('gorduras').textContent = Math.round(gorduraGramas);
+    macroForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        calcularMacros();
+    });
 
-    // Mostrar distribuição por tipo de dia se aplicável
-    if (treino || cardio) {
-      mostrarDistribuicaoTreino(caloriasDiarias, proteinaGramas, carboidratoGramas, gorduraGramas, treino, cardio);
-    } else {
-      document.getElementById('trainingResults').style.display = 'none';
+    document.addEventListener('DOMContentLoaded', event => {
+        let valoresSalvos = {};
+
+        try {
+            valoresSalvos = JSON.parse(localStorage.getItem('valores_salvos')) || {};
+        } catch (e) {
+            console.error(e);
+        }
+
+        const changedInputs = [];
+
+        Object.entries(valoresSalvos).forEach(([key, value]) => {
+            const input = macroForm.elements[key];
+
+            if (!input) {
+                return;
+            }
+
+            if (Array.isArray(input)) {
+                input.forEach(actualInput => {
+                    const shouldBeChecked = actualInput.value === value;
+
+                    if (actualInput.checked !== shouldBeChecked) {
+                        actualInput.checked = shouldBeChecked;
+                        changedInputs.push(actualInput);
+                    }
+                });
+            } else if (input.value !== value) {
+                input.value = value;
+                changedInputs.push(input);
+            }
+        });
+
+        changedInputs.forEach(changedInput => {
+            changedInput.dispatchEvent(new Event('input'));
+            changedInput.dispatchEvent(new Event('change'));
+        });
+    });
+
+    function descobrirAtividade() {
+        const sessoesTreino = parseInt(document.getElementById('treinos').value);
+        const sessoesCardio = parseInt(document.getElementById('cardios').value);
+        const minutosCardio = parseInt(document.getElementById('tempo-cardio').value);
+        const metaPassos = parseInt(document.getElementById('meta-passos').value);
+
+        // Calculate points for each activity type
+        const pontosMusculacao = sessoesTreino; // Strength training is intense
+        const pontosCardio = (sessoesCardio * minutosCardio) / 30; // 30 min = 1 point
+        const pontosPassos = metaPassos / 2500; // 2500 steps = 1 point
+
+        // Total activity score
+        const totalScore = pontosMusculacao + pontosCardio + pontosPassos;
+
+        if (totalScore >= 20) {
+            return "extrema";
+        } else if (totalScore >= 15) {
+            return "intensa";
+        } else if (totalScore >= 10) {
+            return "alta";
+        } else if (totalScore >= 5) {
+            return "moderada";
+        } else {
+            return "leve";
+        }
     }
 
-    document.getElementById('results').style.display = 'block';
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-  }
+    // Adicionada: função utilitária global para distribuir inteiros em n partes (soma exata)
+    function distribuirInteiro(total, divisao) {
+        const base = Math.floor(total / divisao);
+        const partes = new Array(divisao).fill(base);
 
-  function mostrarDistribuicaoTreino(calorias, proteinas, carboidratos, gorduras, treino, cardio) {
-    let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">';
+        let restante = total - (base * divisao);
+        // Distribui o resto nas primeiras refeições
+        for (let i = 0; i < divisao && restante > 0; i++, restante--) {
+            partes[i] += 1;
+        }
+        return partes;
+    }
 
-    // Dia normal
-    html += `
-                <div style="background: white; padding: 15px; border-radius: 8px;">
-                    <h4 style="color: #666; margin-bottom: 10px;">📅 Dia Normal</h4>
-                    <p><strong>Calorias:</strong> ${Math.round(calorias)} kcal</p>
-                    <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
-                    <p><strong>Carboidratos:</strong> ${Math.round(carboidratos)}g</p>
-                    <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
+    function calcularMacros() {
+        // Obter valores do formulário
+        const sexo = document.getElementById('sexo').value;
+        const idade = parseInt(document.getElementById('idade').value);
+        const altura = parseInt(document.getElementById('altura').value);
+        const peso = parseFloat(document.getElementById('peso').value);
+        const atividade = descobrirAtividade();
+        const objetivo = document.getElementById('objetivo').value;
+        const proteina = document.getElementById('proteina').value;
+        const distribuicaoTreino = document.getElementById('distribuicao-treino').checked;
+        const refeicoes = parseInt(document.getElementById('refeicoes').value) || 0;
+
+        // Calcular TMB (Taxa Metabólica Basal) usando fórmula de Mifflin-St Jeor
+        let tmb = (10 * peso) + (6.25 * altura) - (5 * idade);
+
+        if (sexo === 'masculino') {
+            tmb += 5;
+        } else {
+            tmb -=  161;
+        }
+
+        // Fator de atividade
+        const fatoresAtividade = {
+            'leve': 1.2,
+            'moderada': 1.375,
+            'alta': 1.55,
+            'intensa': 1.725,
+            'extrema': 1.9
+        };
+
+        // Calcular TDEE (Total Daily Energy Expenditure)
+        let tdee = tmb * fatoresAtividade[atividade];
+
+        // Ajustar para objetivo
+        const ajustesObjetivo = {
+            'perder': -500,
+            'perder_rapido': -750,
+            'manter': 0,
+            'ganhar': 300,
+            'ganhar_rapido': 500
+        };
+
+        let caloriasDiarias = Math.round(tdee + ajustesObjetivo[objetivo]);
+
+        // Calcular proteínas
+        const fatoresProteinaPorObjetivo = {
+            'ganhar': {
+                'baixa': 1.6,
+                'moderada': 1.8,
+                'alta': 2.0,
+                'extrema': 2.2
+            },
+            'perder_ou_manter': {
+                'baixa': 1.8,
+                'moderada': 2.1,
+                'alta': 2.4,
+                'extrema': 2.7
+            }
+        };
+
+        const simplificacaoPorObjetivo = {
+            'perder': 'perder_ou_manter',
+            'perder_rapido': 'perder_ou_manter',
+            'manter': 'perder_ou_manter',
+            'ganhar': 'ganhar',
+            'ganhar_rapido': 'ganhar'
+        };
+
+        const objetivoSimplificado = simplificacaoPorObjetivo[objetivo];
+
+        const proteinaGramas = Math.round(peso * fatoresProteinaPorObjetivo[objetivoSimplificado][proteina]);
+        const proteinaKcal = proteinaGramas * 4;
+
+        const percentualGordurasPorObjetivo = {
+            'perder': 0.25,
+            'perder_rapido': 0.225,
+            'manter': 0.25,
+            'ganhar': 0.275,
+            'ganhar_rapido': 0.30
+        };
+
+        // Calcular gorduras (percentual por objetivo)
+        const gorduraKcal = caloriasDiarias * percentualGordurasPorObjetivo[objetivo];
+        const gorduraGramas = Math.round(gorduraKcal / 9);
+
+        // Calcular carboidratos (resto das calorias)
+        const carboKcal = caloriasDiarias - proteinaKcal - gorduraKcal;
+        const carboGramas = Math.round(carboKcal / 4);
+
+        document.getElementById('distribuicao-por-dia').innerHTML = '';
+        document.getElementById('atividade').textContent = atividade.charAt(0).toUpperCase() + atividade.slice(1).replace('_', ' ');
+
+        if (distribuicaoTreino) {
+            const sessoesTreino = parseInt(document.getElementById('treinos').value);
+            const sessoesDescanso = 7 - sessoesTreino;
+
+            if (sessoesTreino >= 7) {
+                exibirDistribuicaoDiaria('Calorias e Macros em Dias de Treino', refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas);
+            } else if (sessoesDescanso >= 7) {
+                exibirDistribuicaoDiaria('Calorias e Macros em Dias de Descanso', refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas);
+            } else {
+                const caloriasDiariasTreino = Math.round(caloriasDiarias * 1.1);
+                const proteinaGramasTreino = Math.round(proteinaGramas * 1.1);
+                const carboGramasTreino = Math.round(carboGramas * 1.1);
+                const gorduraGramasTreino = Math.round(gorduraGramas * 1.1);
+
+                const caloriasSemanais = caloriasDiarias * 7;
+                const proteinaSemanais = proteinaGramas * 7;
+                const carboSemanais = carboGramas * 7;
+                const gorduraSemanais = gorduraGramas * 7;
+
+                const caloriasDiariasDescanso = Math.round((caloriasSemanais - (caloriasDiariasTreino * sessoesTreino)) / sessoesDescanso);
+                const proteinaGramasDescanso = Math.round((proteinaSemanais - (proteinaGramasTreino * sessoesTreino)) / sessoesDescanso);
+                const carboGramasDescanso = Math.round((carboSemanais - (carboGramasTreino * sessoesTreino)) / sessoesDescanso);
+                const gorduraGramasDescanso = Math.round((gorduraSemanais - (gorduraGramasTreino * sessoesTreino)) / sessoesDescanso);
+
+                exibirDistribuicaoDiaria('Calorias e Macros em Dias de Treino', refeicoes, caloriasDiariasTreino, proteinaGramasTreino, carboGramasTreino, gorduraGramasTreino);
+                exibirDistribuicaoDiaria('Calorias e Macros em Dias de Descanso', refeicoes, caloriasDiariasDescanso, proteinaGramasDescanso, carboGramasDescanso, gorduraGramasDescanso);
+            }
+        } else {
+            exibirDistribuicaoDiaria('Calorias e Macronutrientes Diários', refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas);
+        }
+
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function exibirDistribuicaoDiaria(titulo, refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas) {
+        document.getElementById('distribuicao-por-dia').insertAdjacentHTML('beforeend', `
+            <div class="dia">
+                <h3>${titulo}</h3>
+
+                <div class="macro-grid">
+                    <div class="macro-card">
+                        <h4>🔥 Calorias</h4>
+                        <div class="macro-value" id="calorias">${caloriasDiarias}</div>
+                        <div class="macro-unit">kcal/dia</div>
+                    </div>
+                    <div class="macro-card">
+                        <h4>🥩 Proteínas</h4>
+                        <div class="macro-value" id="proteinas">${proteinaGramas}</div>
+                        <div class="macro-unit">g/dia</div>
+                    </div>
+                    <div class="macro-card">
+                        <h4>🍞 Carboidratos</h4>
+                        <div class="macro-value" id="carboidratos">${carboGramas}</div>
+                        <div class="macro-unit">g/dia</div>
+                    </div>
+                    <div class="macro-card">
+                        <h4>🥑 Gorduras</h4>
+                        <div class="macro-value" id="gorduras">${gorduraGramas}</div>
+                        <div class="macro-unit">g/dia</div>
+                    </div>
                 </div>
-            `;
 
-    if (treino) {
-      const caloriasTreino = calorias + 200;
-      const carboidratosTreino = carboidratos + 50; // 200 kcal extras = 50g carbs
-      html += `
-                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                        <h4 style="color: #4caf50; margin-bottom: 10px;">💪 Dia de Treino</h4>
-                        <p><strong>Calorias:</strong> ${Math.round(caloriasTreino)} kcal</p>
-                        <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
-                        <p><strong>Carboidratos:</strong> ${Math.round(carboidratosTreino)}g</p>
-                        <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
+                <!-- Adicionado: container onde a tabela de refeições será montada dinamicamente -->
+                <div id="container-refeicoes" class="macro-card" style="margin-top:20px;">
+                    <h4>🍽️ Sugestão de Calorias e Macros por Refeição</h4>
+
+                    <div style="overflow:auto;">
+                        <table id="tabela-refeicoes">
+                            <thead>
+                                <tr>
+                                    <th>Refeição</th>
+                                    <th>Calorias (kcal)</th>
+                                    <th>Proteínas (g)</th>
+                                    <th>Carboidratos (g)</th>
+                                    <th>Gorduras (g)</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                ${distribuirRefeicoes(refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas)}
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <td style="text-align: right;">Total</td>
+                                    <td>${caloriasDiarias}</td>
+                                    <td>${proteinaGramas}</td>
+                                    <td>${carboGramas}</td>
+                                    <td>${gorduraGramas}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-                `;
+                </div>
+            </div>
+        `);
     }
 
-    if (cardio) {
-      const caloriasCardio = calorias + 150;
-      const carboidratosCardio = carboidratos + 37.5; // 150 kcal extras = 37.5g carbs
-      html += `
-                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-                        <h4 style="color: #ff9800; margin-bottom: 10px;">🏃 Dia de Cardio</h4>
-                        <p><strong>Calorias:</strong> ${Math.round(caloriasCardio)} kcal</p>
-                        <p><strong>Proteínas:</strong> ${Math.round(proteinas)}g</p>
-                        <p><strong>Carboidratos:</strong> ${Math.round(carboidratosCardio)}g</p>
-                        <p><strong>Gorduras:</strong> ${Math.round(gorduras)}g</p>
-                    </div>
-                `;
-    }
+    function distribuirRefeicoes(refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas) {
+        const caloriasPorRefeicao = distribuirInteiro(caloriasDiarias, refeicoes);
+        const proteinasPorRefeicao = distribuirInteiro(proteinaGramas, refeicoes);
+        const carboPorRefeicao = distribuirInteiro(carboGramas, refeicoes);
+        const gordurasPorRefeicao = distribuirInteiro(gorduraGramas, refeicoes);
 
-    html += '</div>';
-    document.getElementById('trainingDetails').innerHTML = html;
-    document.getElementById('trainingResults').style.display = 'block';
-  }
+        const linhas = [];
+
+        for (let i = 0; i < refeicoes; i++) {
+            linhas.push(`
+                <tr>
+                    <td style="color: #666;">Refeição ${i+1}</td>
+                    <td>${caloriasPorRefeicao[i]}</td>
+                    <td>${proteinasPorRefeicao[i]}</td>
+                    <td>${carboPorRefeicao[i]}</td>
+                    <td>${gordurasPorRefeicao[i]}</td>
+                </tr>
+            `.trim());
+        }
+
+        return linhas.join('\n');
+    }
 </script>
 </body>
 </html>
