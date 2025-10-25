@@ -129,6 +129,27 @@
             display: none;
         }
 
+        .botoes-navegacao {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .botoes-navegacao > button {
+            background: #ffffff;
+            color: #333;
+            border: 1px solid #e1e5e9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 16px;
+            min-height: 40px;
+        }
+
+        .botoes-navegacao > button:hover {
+            background: #f1f3f5;
+        }
+
         .results h2 {
             color: #333;
             margin-bottom: 20px;
@@ -155,6 +176,7 @@
             color: #667eea;
             margin-bottom: 10px;
             font-size: 1.2em;
+            word-wrap: break-word;
         }
 
         .macro-value {
@@ -213,7 +235,7 @@
             }
 
             .form-container {
-                padding: 20px;
+                padding: 20px 10px;
             }
 
             .form-row {
@@ -222,7 +244,43 @@
             }
 
             .results {
+                margin-top: 10px;
                 padding: 20px 10px;
+            }
+        }
+
+        /* Print rules: only print the results block, hide everything else */
+        @media print {
+            html, body {
+                overflow: hidden;
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            .results, .results * {
+                visibility: visible;
+            }
+
+            .results {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            .dia {
+                break-after: page;
+            }
+
+            .macro-card h4 {
+                font-size: 1em;
+            }
+
+            /* hide UI controls inside results when printing */
+            .no-print {
+                display: none !important;
             }
         }
     </style>
@@ -333,6 +391,12 @@
         </form>
 
         <div id="results" class="results">
+            <div class="botoes-navegacao no-print">
+                <button id="voltar-formulario" class="back-btn" type="button">← Voltar</button>
+                <button class="btn-imprimir-resultados" type="button">🖨️ Salvar PDF</button>
+            </div>
+
+
             <h2>Resultado</h2>
 
             <div class="macro-card">
@@ -341,6 +405,8 @@
             </div>
 
             <div id="distribuicao-por-dia" class="distribuicao-por-dia"></div>
+
+            <button type="button" class="btn btn-imprimir-resultados no-print">🖨️ Salvar PDF</button>
         </div>
     </div>
 </div>
@@ -373,7 +439,7 @@
         'manter': 'manutenção'
     }
 
-    document.getElementById('objetivo').addEventListener('change', event => {
+    document.getElementById('objetivo').addEventListener('change', function (event) {
         const objetivo = event.currentTarget.value;
 
         let baixaProteina;
@@ -405,18 +471,38 @@
     });
 
     const macroForm = document.getElementById('macroForm');
+    const resultsSection = document.getElementById('results');
 
-    macroForm.addEventListener('change', () => {
+    macroForm.addEventListener('change', function () {
         const formData = Object.fromEntries(new FormData(document.getElementById('macroForm')).entries());
         localStorage.setItem('valores_salvos', JSON.stringify(formData));
     });
 
-    macroForm.addEventListener('submit', function(e) {
+    macroForm.addEventListener('submit', function (e) {
         e.preventDefault();
         calcularMacros();
     });
 
-    document.addEventListener('DOMContentLoaded', event => {
+    document.getElementById('voltar-formulario').addEventListener('click', function(e) {
+        resultsSection.style.display = 'none';
+        macroForm.style.display = 'block';
+
+        const firstInput = document.querySelector('input,select');
+
+        if (firstInput) {
+            firstInput.focus();
+        }
+
+        macroForm.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.querySelectorAll('.btn-imprimir-resultados').forEach(botao => {
+        botao.addEventListener('click', function() {
+            window.print();
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
         let valoresSalvos = {};
 
         try {
@@ -618,8 +704,9 @@
             exibirDistribuicaoDiaria('Calorias e Macronutrientes Diários', refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas);
         }
 
-        document.getElementById('results').style.display = 'block';
-        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        macroForm.style.display = 'none';
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
 
     function exibirDistribuicaoDiaria(titulo, refeicoes, caloriasDiarias, proteinaGramas, carboGramas, gorduraGramas) {
